@@ -1,4 +1,4 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -16,7 +16,6 @@ const productSchema = new mongoose.Schema({
   },
   ratings: {
     type: Number,
-    required: [true, "Please give ratings of product"],
     default: 0,
   },
   images: [
