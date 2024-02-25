@@ -17,9 +17,12 @@ export const createProduct = AsyncErrorHandler(async (req, res, next) => {
 });
 
 export const getAllProducts = AsyncErrorHandler(async (req, res, next) => {
+  const productsPerPage = 4;
+  const productCount = await Product.countDocuments();
   const apiFeatures = new ApiFeatures(Product.find(), req.query)
     .search()
-    .filter();
+    .filter()
+    .pagination(productsPerPage);
   const products = await apiFeatures.query;
 
   if (!products) {
@@ -29,6 +32,7 @@ export const getAllProducts = AsyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     products,
+    productCount,
   });
 });
 

@@ -22,10 +22,18 @@ class ApiFeatures {
 
     const removeFields = ["keyword", "limit", "page"];
     removeFields.forEach((key) => delete queryStrCopy[key]);
-    this.query = this.query.find(queryStrCopy);
+
+    let queryStr = JSON.stringify(queryStrCopy);
+    queryStr = queryStr.replace(/\b(gt|gte|lt|lte)\b/g, (key) => `$${key}`);
+    this.query = this.query.find(JSON.parse(queryStr));
     return this;
   }
-  pagination() {}
+  pagination(productsPerPage) {
+    const currentPage = this.queryStr.page || 1;
+    const skip = productsPerPage * (currentPage - 1);
+    this.query = this.query.limit(productsPerPage).skip(skip);
+    return this;
+  }
 }
 
 export default ApiFeatures;
