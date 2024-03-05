@@ -1,10 +1,10 @@
-import AsyncErrorHandler from "./AsyncErrorHandler";
-import ErrorHandler from "../utils/ErrorHandler";
-import User from "../models/userModel";
+import AsyncErrorHandler from "./AsyncErrorHandler.js";
+import ErrorHandler from "../utils/ErrorHandler.js";
+import User from "../models/userModel.js";
 import jwt from "jsonwebtoken";
 
-const Authenticate = AsyncErrorHandler(async (req, res, next) => {
-  const { token } = req.cookie;
+export const Authenticate = AsyncErrorHandler(async (req, res, next) => {
+  const { token } = req.cookies;
 
   if (!token) {
     return next(new ErrorHandler("Invalid Token authenticated", 401));
@@ -17,7 +17,7 @@ const Authenticate = AsyncErrorHandler(async (req, res, next) => {
   next();
 });
 
-const Authorize = (...roles) => {
+export const Authorize = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
       return next(
