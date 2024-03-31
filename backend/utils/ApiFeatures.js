@@ -17,6 +17,12 @@ class ApiFeatures {
     this.query = this.query.find({ ...keyword });
     return this;
   }
+
+  getFilteredProductsCount() {
+    const countQuery = this.query.model.countDocuments(this.query._conditions);
+    return countQuery.exec();
+  }
+
   filter() {
     const queryStrCopy = { ...this.queryStr };
 

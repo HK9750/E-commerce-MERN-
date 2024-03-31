@@ -1,7 +1,7 @@
 import Product from "../models/productModel.js";
 import AsyncErrorHandler from "../middleware/AsyncErrorHandler.js";
 import ErrorHandler from "../utils/ErrorHandler.js";
-import ApiFeatures from "../utils/apiFeatures.js";
+import ApiFeatures from "../utils/ApiFeatures.js";
 
 export const createProduct = AsyncErrorHandler(async (req, res, next) => {
   req.body.user = req.user.id;
@@ -18,13 +18,17 @@ export const createProduct = AsyncErrorHandler(async (req, res, next) => {
 });
 
 export const getAllProducts = AsyncErrorHandler(async (req, res, next) => {
-  const productsPerPage = 4;
-  const productCount = await Product.countDocuments();
-  const apiFeatures = new ApiFeatures(Product.find(), req.query)
+  const resultPerPage = 8;
+  const productsCount = await Product.countDocuments();
+
+  const apiFeature = new ApiFeatures(Product.find(), req.query)
     .search()
-    .filter()
-    .pagination(productsPerPage);
-  const products = await apiFeatures.query;
+    .filter();
+
+  const filteredProductsCount = await apiFeature.getFilteredProductsCount();
+
+  apiFeature.pagination(resultPerPage);
+  let products = await apiFeature.query;
 
   if (!products) {
     return next(new ErrorHandler("Error fetching all the products", 404));
@@ -33,7 +37,9 @@ export const getAllProducts = AsyncErrorHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     products,
-    productCount,
+    productsCount,
+    filteredProductsCount,
+    resultPerPage,
   });
 });
 
