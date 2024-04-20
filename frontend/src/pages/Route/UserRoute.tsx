@@ -1,13 +1,19 @@
+import { PropsWithChildren } from "react";
 import { useSelector } from "react-redux";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
-const UserRoute = () => {
-  const { user } = useSelector((state: any) => state.loadUser);
-  return user.role && (user.role === "user" || user.role === "admin") ? (
-    <Outlet />
+type UserRouteProps = PropsWithChildren<{}>;
+
+export default function UserRoute({ children }: UserRouteProps) {
+  const { user } = useSelector((state: any) => state.user);
+  const sessionUser = JSON.parse(sessionStorage.getItem("user") || "{}");
+  return ((user || sessionUser) &&
+    (user.role || sessionUser?.role) &&
+    (user.role === "user" || user.role === "admin")) ||
+    sessionUser.role === "user" ||
+    sessionUser.role === "admin" ? (
+    children
   ) : (
-    <Navigate to="/login" replace />
+    <Navigate to="/login" />
   );
-};
-
-export default UserRoute;
+}

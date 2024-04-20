@@ -81,7 +81,6 @@ export const createAndUpdateReview =
         headers: { "Content-Type": "application/json" },
         withCredentials: true,
       });
-      console.log(data);
       dispatch({ type: CREATE_REVIEW_SUCCESS, payload: data });
     } catch (error: any) {
       dispatch({

@@ -1,15 +1,6 @@
 import React from "react";
-import UserOptions from "./UserOptions";
-import { Action, ThunkDispatch } from "@reduxjs/toolkit";
-import { useDispatch } from "react-redux";
-import { useEffect } from "react";
-import { loadUser } from "@/actions/user";
 
 const Home: React.FC = () => {
-  const dispatch: ThunkDispatch<any, any, Action> = useDispatch();
-  useEffect(() => {
-    dispatch(loadUser());
-  }, [dispatch]);
   return (
     <>
       <div className="bg-transparent border-t text-white flex flex-col justify-center items-center">
@@ -31,9 +22,6 @@ const Home: React.FC = () => {
                 Learn More
               </button>
             </div>
-          </div>
-          <div>
-            <UserOptions />
           </div>
         </div>
       </div>

@@ -13,6 +13,7 @@ import profile from "@/images/download.png";
 import { Review } from "./ProductTypes";
 import { createAndUpdateReview } from "@/actions/products";
 import DialogReview from "./DialogReview";
+import { addItemToCart } from "@/actions/cartAction";
 
 import {
   Carousel,
@@ -33,7 +34,7 @@ const ProductDetails = () => {
 
   const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
   const dispatch: ThunkDispatch<any, any, Action> = useDispatch();
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
 
   const { reviews } = useSelector((state: any) => state.allReviews);
   console.log(reviews);
@@ -55,7 +56,8 @@ const ProductDetails = () => {
   };
 
   const addToCartHandler = () => {
-    console.log("Added to cart");
+    dispatch(addItemToCart(id ?? "", quantity));
+    toast.success("Product added to cart");
   };
 
   const submitReview = () => {
@@ -184,10 +186,10 @@ const ProductDetails = () => {
                     Status :{" "}
                     <b
                       className={classnames("text-green-500", {
-                        "text-red-500": product.stock > 1,
+                        "text-red-500": product.stock === 0,
                       })}
                     >
-                      {product.Stock <= 1 ? "Out of Stock" : "In Stock"}
+                      {product.stock === 0 ? "Out of Stock" : "In Stock"}
                     </b>
                   </p>
 

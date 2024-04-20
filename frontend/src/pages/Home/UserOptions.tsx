@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SpeedDial, SpeedDialAction } from "@mui/material";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import DashboardIcon from "@mui/icons-material/Dashboard";
@@ -7,20 +7,19 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ProfileImg from "@/images/download.png";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { Action, ThunkDispatch } from "@reduxjs/toolkit";
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 import { logout } from "@/actions/user";
 import { useDispatch } from "react-redux";
 
 const UserOptions = () => {
   const navigate = useNavigate();
-  const dispatch: ThunkDispatch<any, any, Action> = useDispatch();
+  const dispatch: ThunkDispatch<any, any, any> = useDispatch();
+
   const [open, setOpen] = useState(false);
-  const { user } = useSelector((state: any) => state.loadUser);
-  if (!user) {
-    return null;
-  }
+  const { user } = useSelector((state: any) => state.user);
+  const { success } = useSelector((state: any) => state.logout);
+
   const options = [
     { icon: <ListAltIcon />, name: "Orders", func: orders },
     { icon: <PersonIcon />, name: "Profile", func: account },
@@ -53,9 +52,11 @@ const UserOptions = () => {
   }
   function logoutUser() {
     dispatch(logout());
-    toast.success("Logged Out");
-    navigate("/login");
+    if (success) {
+      navigate("/login");
+    }
   }
+
   return (
     <section>
       <SpeedDial

@@ -1,4 +1,3 @@
-import { Product } from "../Product/ProductTypes";
 import ProductCard from "../Product/ProductCard";
 import Loading from "../Home/Loading";
 import { ThunkDispatch } from "redux-thunk";
@@ -23,10 +22,16 @@ import { CLEAR_ERRORS } from "@/constants/productConstants";
 const Product = () => {
   const dispatch: ThunkDispatch<any, any, Action> = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const [minPrice, setMinPrice] = useState(0);
+  const [minPrice, setMinPrice] = useState(100);
   const [maxPrice, setMaxPrice] = useState(100000);
   const [categoryFilter, setCategoryFilter] = useState("");
   const [ratingsFilter, setRatingsFilter] = useState(0);
+
+  const handleCurrentPage = (page: number) => setCurrentPage(page);
+  const handleRatingFilter = (rating: number) => setRatingsFilter(rating);
+  const handleCategoryFilter = (e: any) => setCategoryFilter(e.target.value);
+  const handleMinPrice = (e: any) => setMinPrice(parseInt(e.target.value, 10));
+  const handleMaxPrice = (e: any) => setMaxPrice(parseInt(e.target.value, 10));
 
   const categories = [
     "Select a category",
@@ -128,7 +133,7 @@ const Product = () => {
                   className="w-24 md:w-32 py-1 px-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
                   placeholder="Min Price"
                   value={minPrice}
-                  onChange={(e) => setMinPrice(parseInt(e.target.value, 10))}
+                  onChange={handleMinPrice}
                 />
               </div>
               <div className="flex m-2 items-center">
@@ -140,12 +145,11 @@ const Product = () => {
                   className="w-24 md:w-32 py-1 px-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
                   placeholder="Max Price"
                   value={maxPrice}
-                  onChange={(e) => setMaxPrice(parseInt(e.target.value, 10))}
+                  onChange={handleMaxPrice}
                 />
               </div>
             </div>
 
-            {/* Category */}
             <div className="w-full md:w-1/3 flex flex-col items-center">
               <h3 className="font-semibold p-1 text-center">Category</h3>
               <select
@@ -153,7 +157,7 @@ const Product = () => {
                 id="category"
                 className="w-1/2 bg-gray-100 dark:bg-gray-700 rounded-md p-1 outline-none"
                 value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
+                onChange={handleCategoryFilter}
               >
                 {categories.map((category) => (
                   <option value={category} key={category}>
@@ -173,9 +177,7 @@ const Product = () => {
                     value={ratingsFilter}
                     precision={1}
                     onChange={(event, newValue) => {
-                      if (newValue !== null) {
-                        setRatingsFilter(newValue);
-                      }
+                      handleRatingFilter(newValue || 0);
                     }}
                   />
                 </Box>
@@ -186,7 +188,7 @@ const Product = () => {
           <div className="flex items-center mx-auto gap-4">
             <div className="flex items-center justify-center m-4 gap-6 p-4 flex-wrap flex-1">
               {products &&
-                products.map((product: Product) => (
+                products.map((product: any) => (
                   <ProductCard key={product._id} product={product} />
                 ))}
             </div>
@@ -205,7 +207,7 @@ const Product = () => {
                     <PaginationItem key={page}>
                       <PaginationLink
                         isActive={currentPage == page}
-                        onClick={() => setCurrentPage(page)}
+                        onClick={handleCurrentPage.bind(null, page)}
                         className="cursor-pointer"
                       >
                         {page}

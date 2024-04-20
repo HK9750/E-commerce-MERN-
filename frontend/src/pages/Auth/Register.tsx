@@ -1,66 +1,63 @@
 import { registerUser } from "@/actions/user";
 import { Action, ThunkDispatch } from "@reduxjs/toolkit";
-import React, { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import ProfileImg from "@/images/download.png";
-import { RegisterUser } from "./AuthTypes";
 import { useNavigate } from "react-router-dom";
 import Loading from "../Home/Loading";
 
 const Register = () => {
   const dispatch: ThunkDispatch<any, any, Action> = useDispatch();
   const navigate = useNavigate();
-  const [user, setUser] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-  const { username, email, password } = user;
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(ProfileImg);
   const [avatarPreview, setAvatarPreview] = useState(ProfileImg);
 
-  const { loading, success, isAuthenticated, error } = useSelector(
-    (state: any) => state.registerUser
-  );
+  const { loading, success, error } = useSelector((state: any) => state.user);
 
-  const registerChange = (e: any) => {
-    e.preventDefault();
-    if (e.target.name == "avatar") {
+  const avatarHandle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
       const reader = new FileReader();
       reader.onload = () => {
-        if (reader.readyState == 2) {
-          const result = reader.result as string;
-          setAvatar(result);
-          setAvatarPreview(result);
+        if (reader.readyState === 2) {
+          const result = reader.result;
+          if (typeof result === "string") {
+            const base64String = result.split(",")[1];
+            setAvatarPreview(result);
+            setAvatar(base64String);
+          } else {
+            console.error("Failed to read file as a string.");
+          }
         }
       };
-      reader.readAsDataURL(e.target.files[0]);
-    } else {
-      setUser({ ...user, [e.target.name]: e.target.value });
+      reader.readAsDataURL(files[0]);
     }
   };
 
-  const handleRegister = (e: FormEvent) => {
+  const handleRegister = (e: any) => {
     e.preventDefault();
-    const userData: RegisterUser = {
-      username,
-      email,
-      password,
-      avatar,
-    };
+    const userData = new FormData();
+    userData.append("username", username);
+    userData.append("email", email);
+    userData.append("password", password);
+    userData.append("avatar", avatar);
     dispatch(registerUser(userData));
   };
+  console.log();
 
   useEffect(() => {
     if (error) {
       toast.error("Error : Can't Regsiter User");
     }
-    if (isAuthenticated) {
+    if (success) {
       toast.success("You have registered Successfully");
       navigate("/");
     }
-  }, [error, dispatch, avatarPreview]);
+  }, [error, dispatch, success, avatarPreview]);
 
   return (
     <>
@@ -72,7 +69,7 @@ const Register = () => {
             <h1 className="text-center text-2xl mb-2 font-semibold text-gray-800">
               Register
             </h1>
-            <form onSubmit={handleRegister}>
+            <form onSubmit={handleRegister} encType="multipart/form-data">
               <div className="mb-4">
                 <label htmlFor="username" className="block font-semibold">
                   Username
@@ -83,7 +80,7 @@ const Register = () => {
                   name="username"
                   placeholder="Enter your username"
                   value={username}
-                  onChange={registerChange}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
                 />
               </div>
@@ -97,7 +94,7 @@ const Register = () => {
                   name="email"
                   placeholder="Enter your email"
                   value={email}
-                  onChange={registerChange}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
                 />
               </div>
@@ -111,7 +108,7 @@ const Register = () => {
                   name="password"
                   placeholder="Enter your password"
                   value={password}
-                  onChange={registerChange}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full border border-gray-300 rounded px-3 py-2 mt-1"
                 />
               </div>
@@ -130,7 +127,7 @@ const Register = () => {
                     id="avatar"
                     name="avatar"
                     accept="image/*"
-                    onChange={registerChange}
+                    onChange={avatarHandle}
                     className="border border-gray-300 rounded px-3 py-2"
                   />
                 </div>

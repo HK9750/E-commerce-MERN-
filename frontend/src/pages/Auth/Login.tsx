@@ -1,20 +1,25 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Action, ThunkDispatch } from "@reduxjs/toolkit";
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 import Loading from "../Home/Loading";
-import { loadUser, loginUser } from "@/actions/user";
+import { loginUser } from "@/actions/user";
 import { toast } from "react-toastify";
+import { clearErrors } from "@/actions/products";
+import { LOGIN_USER_RESET } from "@/constants/userConstants";
 
 const Login = () => {
-  const dispatch: ThunkDispatch<any, any, Action> = useDispatch();
+  const dispatch: ThunkDispatch<any, any, any> = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const { loading, isAuthenticated, error } = useSelector(
-    (state: any) => state.loginUser
-  );
+  const handleEmail = (e: any) => setEmail(e.target.value);
+  const handlePassword = (e: any) => setPassword(e.target.value);
+  const handleForgetPassword = () => navigate("/forgetPassword");
+  const handleRegister = () => navigate("/register");
+
+  const { loading, error, success } = useSelector((state: any) => state.user);
   const handleLogin = (e: any) => {
     e.preventDefault();
     const data = { email, password };
@@ -23,14 +28,15 @@ const Login = () => {
 
   useEffect(() => {
     if (error) {
-      toast.error("Error:Can't Login");
+      toast.error("Error: Can't Login");
+      dispatch(clearErrors());
     }
-    if (isAuthenticated) {
-      toast.success("Successfully Logged in");
+
+    if (success) {
       navigate("/");
+      dispatch({ type: LOGIN_USER_RESET });
     }
-    dispatch(loadUser());
-  }, [dispatch, error, isAuthenticated]);
+  }, [dispatch, error, success, navigate]);
 
   return (
     <>
@@ -55,7 +61,7 @@ const Login = () => {
                     name="email"
                     placeholder="Enter your email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmail}
                     className="focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 mt-2 border"
                   />
                 </div>
@@ -72,7 +78,7 @@ const Login = () => {
                     name="password"
                     placeholder="Enter your password"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePassword}
                     className="mt-2 p-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md border"
                   />
                 </div>
@@ -85,10 +91,18 @@ const Login = () => {
                   </button>
                 </div>
               </form>
-              <div className="mt-4">
+              <div className="mt-2">
+                <button
+                  onClick={handleForgetPassword}
+                  className="text-indigo-600 hover:underline focus:outline-none"
+                >
+                  Forget Password
+                </button>
+              </div>
+              <div className="mt-2">
                 Don't have an account{" "}
                 <button
-                  onClick={() => navigate("/register")}
+                  onClick={handleRegister}
                   className="text-indigo-600 hover:underline focus:outline-none"
                 >
                   Register

@@ -24,9 +24,6 @@ process.on("uncaughtException", (err) => {
   });
 });
 
-// console.log(yt);
-// Handled promise Rejection
-
 process.on("unhandledRejection", (err) => {
   console.log(`Error:${err.message}`);
   console.log("Shutting down the server due to unhandled rejection.");

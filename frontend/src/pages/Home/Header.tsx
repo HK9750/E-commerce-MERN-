@@ -11,6 +11,13 @@ const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const handleKeyword = (e: any) => {
+    setKeyword(e.target.value);
+  };
+  const handleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
   const searchProduct = (e: any) => {
     e.preventDefault();
     if (keyword.trim()) {
@@ -48,7 +55,8 @@ const Header = () => {
 
         {/* Third div at the right */}
         <div className="flex items-center justify-between mr-8">
-          {location.pathname === "/products" || "/products/:keyword" ? (
+          {location.pathname === "/products" ||
+          location.pathname.startsWith("/products/") ? (
             <form
               className="flex justify-center gap-4"
               onSubmit={searchProduct}
@@ -57,7 +65,7 @@ const Header = () => {
                 type="text"
                 placeholder="Search"
                 value={keyword}
-                onChange={(e) => setKeyword(e.target.value)}
+                onChange={handleKeyword}
               />
               <Button type="submit">Search</Button>
             </form>
@@ -65,7 +73,7 @@ const Header = () => {
 
           <Button
             variant={"ghost"}
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={handleTheme}
             className="dark:text-white"
           >
             <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
