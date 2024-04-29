@@ -27,7 +27,7 @@ router.route("/updatePass").put(Authenticate, updateUserPassword);
 // AdminRoutes
 router.route("/admin/users").get(Authenticate, Authorize("admin"), getAllUsers);
 router
-  .route("/admin/:id")
+  .route("/admin/user/:id")
   .get(Authenticate, Authorize("admin"), getSingleUser)
   .put(Authenticate, Authorize("admin"), updateUserRole)
   .delete(Authenticate, Authorize("admin"), deleteUser);

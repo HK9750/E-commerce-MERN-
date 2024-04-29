@@ -7,7 +7,7 @@ export const errorMiddleware = (err, req, res, next) => {
   // If mongoDB Id is wrong;
 
   if (err.name == "CastError") {
-    const message = `Resource not found:${err.path}`;
+    const message = `Resource not found:${err.path} is not valid. Enter valid ${err.path}`;
     err = new ErrorHandler(message, 400);
   }
 

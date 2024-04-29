@@ -2,6 +2,7 @@ import express from "express";
 import {
   getAllProducts,
   createProduct,
+  adminProducts,
   getProductDetails,
   deleteProduct,
   updateProduct,
@@ -17,10 +18,14 @@ router.route("/product").get(getAllProducts);
 router
   .route("/admin/product/new")
   .post(Authenticate, Authorize("admin"), createProduct);
+
 router
   .route("/admin/product/:id")
   .put(Authenticate, Authorize("admin"), updateProduct)
   .delete(Authenticate, Authorize("admin"), deleteProduct);
+router
+  .route("/admin/products")
+  .get(Authenticate, Authorize("admin"), adminProducts);
 
 router.route("/product/:id").get(getProductDetails);
 

@@ -1,13 +1,18 @@
-// import { useSelector } from "react-redux";
-// import { Navigate, Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { PropsWithChildren } from "react";
+import { Navigate } from "react-router-dom";
 
-// const AdminRoute = () => {
-//   const { user } = useSelector((state: any) => state.user);
-//   return user && user.role === "admin" ? (
-//     <Outlet />
-//   ) : (
-//     <Navigate to="/login" replace />
-//   );
-// };
+type AdminRouteProps = PropsWithChildren<{}>;
 
-// export default AdminRoute;
+export default function AdminRoute({ children }: AdminRouteProps) {
+  const { user } = useSelector((state: any) => state.user);
+  const sessionUser = JSON.parse(sessionStorage.getItem("user") || "{}");
+  return ((user || sessionUser) &&
+    (user.role || sessionUser?.role) &&
+    user.role === "admin") ||
+    sessionUser.role === "admin" ? (
+    children
+  ) : (
+    <Navigate to="/login" />
+  );
+}

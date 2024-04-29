@@ -4,6 +4,7 @@ import { Moon, ShoppingCart, Sun } from "lucide-react";
 import { useTheme } from "../../components/theme-provider";
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const { theme, setTheme } = useTheme();
@@ -39,18 +40,18 @@ const Header = () => {
 
         {/* Second div at the middle */}
         <div className="flex-grow hidden lg:flex text-[19px] leading-normal justify-center w-1/3 gap-10 ml-7 font-medium dark:text-white">
-          <a href="/" className="hover:opacity-85">
+          <Link to="/" className="hover:opacity-85">
             Home
-          </a>
-          <a href="/products" className="hover:opacity-85">
+          </Link>
+          <Link to="/products" className="hover:opacity-85">
             Products
-          </a>
-          <a href="#" className="hover:opacity-85">
+          </Link>
+          <Link to="/about" className="hover:opacity-85">
             About
-          </a>
-          <a href="#" className="hover:opacity-85">
+          </Link>
+          <Link to="/contact" className="hover:opacity-85">
             Contact
-          </a>
+          </Link>
         </div>
 
         {/* Third div at the right */}

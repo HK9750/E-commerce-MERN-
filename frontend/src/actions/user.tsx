@@ -26,8 +26,20 @@ import {
   RESET_PASSWORD_FAIL,
   RESET_PASSWORD_SUCCESS,
   RESET_PASSWORD_REQUEST,
+  ADMIN_USERS_FAIL,
+  ADMIN_USERS_REQUEST,
+  ADMIN_USERS_SUCCESS,
+  ADMIN_USER_FAIL,
+  ADMIN_USER_SUCCESS,
+  ADMIN_USER_REQUEST,
+  UPDATE_USER_ROLE_FAIL,
+  UPDATE_USER_ROLE_SUCCESS,
+  UPDATE_USER_ROLE_REQUEST,
+  DELETE_USER_REQUEST,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_FAIL,
 } from "@/constants/userConstants";
-import { BACKEND_URL } from "@/constants/productConstants";
+import { BACKEND_URL, CLEAR_ERRORS } from "@/constants/productConstants";
 
 export const registerUser = (formData: any) => async (dispatch: Dispatch) => {
   try {
@@ -159,3 +171,68 @@ export const resetPassword =
       });
     }
   };
+
+export const clearErrors = () => async (dispatch: Dispatch) => {
+  dispatch({ type: CLEAR_ERRORS });
+};
+
+// Admin Actions
+
+export const getAllUsers = () => async (dispatch: Dispatch) => {
+  try {
+    dispatch({ type: ADMIN_USERS_REQUEST });
+    const { data } = await axios.get(`${BACKEND_URL}/admin/users`);
+    dispatch({ type: ADMIN_USERS_SUCCESS, payload: data });
+  } catch (error: any) {
+    dispatch({
+      type: ADMIN_USERS_FAIL,
+      payload: error.response?.data?.message,
+    });
+  }
+};
+
+export const getSingleUser = (id: string) => async (dispatch: Dispatch) => {
+  try {
+    dispatch({ type: ADMIN_USER_REQUEST });
+    const { data } = await axios.get(`${BACKEND_URL}/admin/user/${id}`);
+    dispatch({ type: ADMIN_USER_SUCCESS, payload: data });
+  } catch (error: any) {
+    dispatch({
+      type: ADMIN_USER_FAIL,
+      payload: error.response?.data?.message,
+    });
+  }
+};
+
+export const updateUserRole =
+  (id: string, formData: any) => async (dispatch: Dispatch) => {
+    try {
+      dispatch({ type: UPDATE_USER_ROLE_REQUEST });
+      const { data } = await axios.put(
+        `${BACKEND_URL}/admin/user/${id}`,
+        formData,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      dispatch({ type: UPDATE_USER_ROLE_SUCCESS, payload: data });
+    } catch (error: any) {
+      dispatch({
+        type: UPDATE_USER_ROLE_FAIL,
+        payload: error.response?.data?.message,
+      });
+    }
+  };
+
+export const deleteUser = (id: string) => async (dispatch: Dispatch) => {
+  try {
+    dispatch({ type: DELETE_USER_REQUEST });
+    const { data } = await axios.delete(`${BACKEND_URL}/admin/user/${id}`);
+    dispatch({ type: DELETE_USER_SUCCESS, payload: data });
+  } catch (error: any) {
+    dispatch({
+      type: DELETE_USER_FAIL,
+      payload: error.response?.data?.message,
+    });
+  }
+};

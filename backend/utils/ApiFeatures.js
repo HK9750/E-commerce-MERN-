@@ -26,7 +26,7 @@ class ApiFeatures {
   filter() {
     const queryStrCopy = { ...this.queryStr };
 
-    const removeFields = ["keyword", "limit", "page"];
+    const removeFields = ["limit", "keyword", "page"];
     removeFields.forEach((key) => delete queryStrCopy[key]);
 
     let queryStr = JSON.stringify(queryStrCopy);
@@ -34,8 +34,9 @@ class ApiFeatures {
     this.query = this.query.find(JSON.parse(queryStr));
     return this;
   }
+
   pagination(productsPerPage) {
-    const currentPage = this.queryStr.page || 1;
+    const currentPage = parseInt(this.queryStr.page, 10) || 1;
     const skip = productsPerPage * (currentPage - 1);
     this.query = this.query.limit(productsPerPage).skip(skip);
     return this;

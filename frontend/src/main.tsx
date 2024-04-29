@@ -25,6 +25,20 @@ import Payment from "./pages/Cart/Payment.tsx";
 import { loadStripe } from "@stripe/stripe-js";
 import { REACT_APP_STRIPE_API_KEY } from "./config.tsx";
 import Success from "./pages/Cart/Success.tsx";
+import MyOrders from "./pages/Orders/MyOrders.tsx";
+import OrderDetails from "./pages/Orders/OrderDetails.tsx";
+import AdminRoute from "./pages/Route/AdminRoute.tsx";
+import Dashboard from "./pages/Admin/Dashboard.tsx";
+import NewProducts from "./pages/Admin/NewProducts.tsx";
+import AllProducts from "./pages/Admin/AllProducts.tsx";
+import UpdateProduct from "./pages/Admin/UpdateProduct.tsx";
+import AllOrders from "./pages/Admin/AllOrders.tsx";
+import UpdateOrder from "./pages/Admin/UpdateOrder.tsx";
+import AllUsers from "./pages/Admin/AllUsers.tsx";
+import UpdateUserRole from "./pages/Admin/UpdateUserRole.tsx";
+import About from "./pages/Home/About.tsx";
+import Contact from "./pages/Home/Contact.tsx";
+import GetAllReviews from "./pages/Admin/GetAllReviews.tsx";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +64,14 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/about",
+        element: <About />,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
       },
       {
         path: "/profile",
@@ -78,6 +100,10 @@ const router = createBrowserRouter([
       {
         path: "/product/:id",
         element: <ProductDetails />,
+      },
+      {
+        path: "/products/:keyword",
+        element: <Product />,
       },
       {
         path: "/products",
@@ -123,6 +149,94 @@ const router = createBrowserRouter([
           <UserRoute>
             <Success />
           </UserRoute>
+        ),
+      },
+      {
+        path: "/orders",
+        element: (
+          <UserRoute>
+            <MyOrders />
+          </UserRoute>
+        ),
+      },
+      {
+        path: "/order/:id",
+        element: (
+          <UserRoute>
+            <OrderDetails />
+          </UserRoute>
+        ),
+      },
+      {
+        path: "/dashboard",
+        element: (
+          <AdminRoute>
+            <Dashboard />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "/admin/product",
+        element: (
+          <AdminRoute>
+            <NewProducts />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "/admin/product/:id",
+        element: (
+          <AdminRoute>
+            <UpdateProduct />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "/admin/products",
+        element: (
+          <AdminRoute>
+            <AllProducts />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "/admin/orders",
+        element: (
+          <AdminRoute>
+            <AllOrders />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "/admin/order/:id",
+        element: (
+          <AdminRoute>
+            <UpdateOrder />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "/admin/users",
+        element: (
+          <AdminRoute>
+            <AllUsers />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "/admin/user/:id",
+        element: (
+          <AdminRoute>
+            <UpdateUserRole />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "/admin/reviews",
+        element: (
+          <AdminRoute>
+            <GetAllReviews />
+          </AdminRoute>
         ),
       },
     ],

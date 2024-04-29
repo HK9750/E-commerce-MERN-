@@ -35,6 +35,7 @@ const ProductDetails = () => {
   const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true }));
   const dispatch: ThunkDispatch<any, any, Action> = useDispatch();
   const { id } = useParams();
+  const { user } = useSelector((state: any) => state.user);
 
   const { reviews } = useSelector((state: any) => state.allReviews);
   console.log(reviews);
@@ -91,7 +92,7 @@ const ProductDetails = () => {
         <>
           <section className="w-[85%] mx-auto m-12">
             <div className="grid grid-cols-1 md:grid-cols-2 bg-white dark:bg-transparent rounded-lg border-gray-300 overflow-hidden">
-              <div className="h-full flex items-center justify-center border-b-2 border-gray-700">
+              <div className="h-full flex items-center justify-center ">
                 <Carousel
                   plugins={[plugin.current]}
                   className="w-full max-w-xs"
@@ -121,7 +122,7 @@ const ProductDetails = () => {
                   <CarouselNext />
                 </Carousel>
               </div>
-              <div className="text-black dark:text-white border-l-2 border-t-2 px-6 py-3 border-gray-700 flex flex-col justify-center">
+              <div className="text-black dark:text-white border-2 px-6 py-3 border-gray-700 flex flex-col justify-center">
                 <div>
                   <h1 className="text-3xl font-semibold">{product.name}</h1>
                   <h1 className="font-semibold text-lg py-2">

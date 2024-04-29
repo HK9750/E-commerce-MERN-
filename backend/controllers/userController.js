@@ -5,8 +5,7 @@ import sendToken from "../utils/jwtToken.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import crypto from "crypto";
 import cloudinary from "cloudinary";
-import fs from "fs";
-import path from "path";
+import mongoose from "mongoose";
 
 export const registerUser = AsyncErrorHandler(async (req, res) => {
   const { username, email, password, avatar } = req.body;
@@ -19,14 +18,13 @@ export const registerUser = AsyncErrorHandler(async (req, res) => {
       height: 200,
     }
   );
-  console.log(cloudAvatar);
   const user = await User.create({
     username,
     email,
     password,
     avatar: {
       public_id: cloudAvatar.public_id,
-      url: cloudAvatar.url,
+      url: cloudAvatar.secure_url,
     },
   });
   sendToken(res, 200, user);
@@ -199,7 +197,13 @@ export const getAllUsers = AsyncErrorHandler(async (req, res, next) => {
   });
 });
 export const getSingleUser = AsyncErrorHandler(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
+  const userId = req.params.id;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return next(new ErrorHandler(`Invalid user ID: ${userId}`));
+  }
+  const user = await User.findById(userId);
+
   if (!user) {
     return next(
       new ErrorHandler(`User does not exists with id:${req.params.id}`)
@@ -233,7 +237,7 @@ export const updateUserRole = AsyncErrorHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    userF,
+    user: userF,
   });
 });
 export const deleteUser = AsyncErrorHandler(async (req, res, next) => {

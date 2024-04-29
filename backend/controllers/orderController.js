@@ -54,21 +54,24 @@ export const getUserOrders = AsyncErrorHandler(async (req, res, next) => {
   });
 });
 
-// Admin Controllers
 export const getAllOrders = AsyncErrorHandler(async (req, res, next) => {
-  const orders = await Order.find();
-  let totalBill = 0;
-
-  orders.forEach((order) => {
-    totalBill += order.totalPrice;
-  });
-
-  res.status(200).json({
-    success: true,
-    orders,
-    totalBill,
-  });
+  try {
+    const orders = await Order.find();
+    let totalBill = 0;
+    orders.forEach((order) => {
+      totalBill += order.totalPrice;
+    });
+    res.status(200).json({
+      success: true,
+      orders,
+      totalBill,
+    });
+  } catch (error) {
+    console.error(error);
+    next(new ErrorHandler("Error fetching admin orders", 500));
+  }
 });
+
 const setStock = async (id, quantity) => {
   const product = await Product.findById(req.params.id);
   product.stock -= quantity;
@@ -94,6 +97,7 @@ export const updateOrder = AsyncErrorHandler(async (req, res, next) => {
     order.deliveredAt = Date.now();
   }
   order.orderStatus = req.body.status;
+  console.log(order.orderStatus);
 
   await order.save({ validateBeforeSave: true });
 
@@ -102,6 +106,7 @@ export const updateOrder = AsyncErrorHandler(async (req, res, next) => {
     order,
   });
 });
+
 export const deleteOrder = AsyncErrorHandler(async (req, res, next) => {
   const order = await Order.findById(req.params.id);
   if (!order) {

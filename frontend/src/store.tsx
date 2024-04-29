@@ -5,6 +5,8 @@ import {
   productDetailsReducer,
   createReviewReducer,
   allReviewsReducer,
+  CreateProductReducer,
+  DelUpdProductReducer,
 } from "./reducers/productReducer";
 import {
   forgetPassReducer,
@@ -12,14 +14,22 @@ import {
   updateUserReducer,
   userReducer,
   logoutReducer,
+  adminUsersReducer,
 } from "./reducers/userReducer";
 import { cartReducer, CartState } from "@/reducers/cartReducer";
-import { createOrder } from "./reducers/orderReducer";
+import {
+  OrderDetails,
+  adminOrdersReducer,
+  createOrder,
+  myOrder,
+} from "./reducers/orderReducer";
 const cartItemsString = localStorage.getItem("cartItems");
 const shoppingInfoString = localStorage.getItem("shippingInfo");
 const preloadedState: Partial<{
   products: any;
   productDetails: any;
+  createproduct: any;
+  delupdateproduct: any;
   createReview: any;
   allReviews: any;
   user: any;
@@ -27,8 +37,12 @@ const preloadedState: Partial<{
   updatePassword: any;
   forgetPassword: any;
   logoutReducer: any;
+  adminUsers: any;
   cart: CartState;
-  order: any;
+  createorder: any;
+  myorder: any;
+  orderDetails: any;
+  adminOrder: any;
 }> = {
   cart: {
     cartItems: cartItemsString ? JSON.parse(cartItemsString) : [],
@@ -51,6 +65,8 @@ const preloadedState: Partial<{
 const rootReducer = combineReducers({
   products: productReducer,
   productDetails: productDetailsReducer,
+  createproduct: CreateProductReducer,
+  delupdateproduct: DelUpdProductReducer,
   createReview: createReviewReducer,
   allReviews: allReviewsReducer,
   user: userReducer,
@@ -58,8 +74,12 @@ const rootReducer = combineReducers({
   updateProfile: updateUserReducer,
   updatePassword: updatePassReducer,
   forgetPassword: forgetPassReducer,
+  adminUsers: adminUsersReducer,
   cart: cartReducer,
-  order: createOrder,
+  createorder: createOrder,
+  myorder: myOrder,
+  orderDetails: OrderDetails,
+  adminOrder: adminOrdersReducer,
 });
 
 const store = configureStore({

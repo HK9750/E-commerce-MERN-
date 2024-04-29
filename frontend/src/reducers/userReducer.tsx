@@ -28,24 +28,42 @@ import {
   RESET_PASSWORD_FAIL,
   FORGOT_PASSWORD_RESET,
   LOGIN_USER_RESET,
+  ADMIN_USERS_REQUEST,
+  ADMIN_USERS_SUCCESS,
+  ADMIN_USERS_FAIL,
+  ADMIN_USER_REQUEST,
+  ADMIN_USER_SUCCESS,
+  ADMIN_USER_FAIL,
+  UPDATE_USER_ROLE_REQUEST,
+  UPDATE_USER_ROLE_SUCCESS,
+  UPDATE_USER_ROLE_FAIL,
+  UPDATE_USER_ROLE_RESET,
+  DELETE_USER_REQUEST,
+  DELETE_USER_FAIL,
+  DELETE_USER_SUCCESS,
+  DELETE_USER_RESET,
 } from "@/constants/userConstants";
 import { CLEAR_ERRORS } from "@/constants/productConstants";
 
 export interface UserState {
   loading: boolean;
   user: RegisterUser;
+  users?: RegisterUser[];
   isAuthenticated: boolean;
   success: boolean;
   error: any;
   isUpdated: boolean;
+  isDeleted?: boolean;
 }
 const initialState: UserState = {
   loading: false,
   isAuthenticated: false,
   success: false,
   user: {} as RegisterUser,
+  users: [],
   error: null,
   isUpdated: false,
+  isDeleted: false,
 };
 
 export const userReducer = (state = initialState, action: any) => {
@@ -203,6 +221,7 @@ export const updatePassReducer = (
       return state;
   }
 };
+
 export const forgetPassReducer = (
   state: UserState = initialState,
   action: any
@@ -230,6 +249,76 @@ export const forgetPassReducer = (
     case RESET_PASSWORD_FAIL:
       return {
         ...state,
+        error: action.payload,
+      };
+    case CLEAR_ERRORS:
+      return {
+        ...state,
+        error: null,
+      };
+    default:
+      return state;
+  }
+};
+
+export const adminUsersReducer = (
+  state: UserState = initialState,
+  action: any
+) => {
+  switch (action.type) {
+    case ADMIN_USERS_REQUEST:
+    case ADMIN_USER_REQUEST:
+    case UPDATE_USER_ROLE_REQUEST:
+    case DELETE_USER_REQUEST:
+      return {
+        ...state,
+        loading: true,
+      };
+    case ADMIN_USERS_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        users: action.payload.users,
+        success: action.payload.success,
+      };
+    case ADMIN_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        user: action.payload.user,
+      };
+    case UPDATE_USER_ROLE_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: action.payload.success,
+        user: action.payload.user,
+        isUpdated: true,
+      };
+    case DELETE_USER_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        success: action.payload.success,
+        isDeleted: true,
+      };
+    case DELETE_USER_RESET:
+      return {
+        ...state,
+        isDeleted: false,
+      };
+    case UPDATE_USER_ROLE_RESET:
+      return {
+        ...state,
+        isUpdated: false,
+      };
+    case ADMIN_USERS_FAIL:
+    case ADMIN_USER_FAIL:
+    case UPDATE_USER_ROLE_FAIL:
+    case DELETE_USER_FAIL:
+      return {
+        ...state,
+        loading: false,
         error: action.payload,
       };
     case CLEAR_ERRORS:

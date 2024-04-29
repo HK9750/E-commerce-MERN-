@@ -22,7 +22,7 @@ import { CLEAR_ERRORS } from "@/constants/productConstants";
 const Product = () => {
   const dispatch: ThunkDispatch<any, any, Action> = useDispatch();
   const [currentPage, setCurrentPage] = useState(1);
-  const [minPrice, setMinPrice] = useState(100);
+  const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(100000);
   const [categoryFilter, setCategoryFilter] = useState("");
   const [ratingsFilter, setRatingsFilter] = useState(0);
@@ -41,6 +41,7 @@ const Product = () => {
     "Audio",
     "Gaming",
     "Photography",
+    "Drinks",
   ];
   const {
     products,
@@ -50,7 +51,9 @@ const Product = () => {
     loading,
     error,
   } = useSelector((state: any) => state.products);
+
   const { keyword } = useParams<{ keyword: string }>();
+  console.log(products);
 
   const totalPages = Math.ceil(productsCount / resultPerPage);
   const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
@@ -73,7 +76,6 @@ const Product = () => {
       toast.error("Error fetching the products");
       dispatch({ type: CLEAR_ERRORS });
     }
-    // Check if categoryFilter is empty or matches the default value
     if (!categoryFilter || categoryFilter === "Select a category") {
       dispatch(
         getProducts(
@@ -120,9 +122,8 @@ const Product = () => {
             <h1 className="font-bold text-3xl">Featured Products</h1>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 p-2 m-2 justify-between bg-white dark:bg-gray-800 border border-gray-300 rounded-lg">
-            {/* Price Range */}
-            <div className="">
+          <div className="flex flex-col md:flex-row gap-6 p-2 m-3 justify-between bg-white dark:bg-transparent border border-gray-300 rounded-lg">
+            <div className="mx-5">
               <h3 className="text-center font-semibold">Price Range</h3>
               <div className="m-2">
                 <label className="font-semibold mr-3">Min-Price :</label>
@@ -130,7 +131,7 @@ const Product = () => {
                   type="number"
                   name="minPrice"
                   id="minPrice"
-                  className="w-24 md:w-32 py-1 px-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
+                  className="w-24 md:w-32 py-1 px-2 bg-gray-100 dark:bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
                   placeholder="Min Price"
                   value={minPrice}
                   onChange={handleMinPrice}
@@ -142,7 +143,7 @@ const Product = () => {
                   type="number"
                   name="maxPrice"
                   id="maxPrice"
-                  className="w-24 md:w-32 py-1 px-2 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
+                  className="w-24 md:w-32 py-1 px-2 bg-gray-100 dark:bg-transparent border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring focus:ring-blue-400"
                   placeholder="Max Price"
                   value={maxPrice}
                   onChange={handleMaxPrice}
@@ -150,12 +151,12 @@ const Product = () => {
               </div>
             </div>
 
-            <div className="w-full md:w-1/3 flex flex-col items-center">
+            <div className="w-full md:w-1/3 flex flex-col items-center mx-5">
               <h3 className="font-semibold p-1 text-center">Category</h3>
               <select
                 name="category"
                 id="category"
-                className="w-1/2 bg-gray-100 dark:bg-gray-700 rounded-md p-1 outline-none"
+                className="w-1/2 bg-gray-100 dark:bg-transparent border dark:border-gray-600 rounded-md p-1 outline-none"
                 value={categoryFilter}
                 onChange={handleCategoryFilter}
               >
@@ -170,12 +171,15 @@ const Product = () => {
             {/* Ratings */}
             <div className="w-full md:w-1/3">
               <h3 className="font-semibold">Ratings</h3>
-              <div className="mt-1">
-                <Box>
+              <div className="mt-2">
+                <Box className="dark:border-white">
                   <Rating
                     name="read-only"
                     value={ratingsFilter}
                     precision={1}
+                    style={{
+                      fontSize: 24,
+                    }}
                     onChange={(event, newValue) => {
                       handleRatingFilter(newValue || 0);
                     }}
@@ -193,37 +197,38 @@ const Product = () => {
                 ))}
             </div>
           </div>
-          {filteredProductsCount > resultPerPage && (
-            <div className="m-6">
-              <Pagination>
-                <PaginationContent>
-                  <PaginationItem>
-                    <PaginationPrevious
-                      onClick={handlePrevPage}
-                      className="cursor-pointer"
-                    />
-                  </PaginationItem>
-                  {pages.map((page) => (
-                    <PaginationItem key={page}>
-                      <PaginationLink
-                        isActive={currentPage == page}
-                        onClick={handleCurrentPage.bind(null, page)}
+          {productsCount > resultPerPage &&
+            filteredProductsCount > resultPerPage && (
+              <div className="m-6">
+                <Pagination>
+                  <PaginationContent>
+                    <PaginationItem>
+                      <PaginationPrevious
+                        onClick={handlePrevPage}
                         className="cursor-pointer"
-                      >
-                        {page}
-                      </PaginationLink>
+                      />
                     </PaginationItem>
-                  ))}
-                  <PaginationItem>
-                    <PaginationNext
-                      onClick={handleNextPage}
-                      className="cursor-pointer"
-                    />
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-            </div>
-          )}
+                    {pages.map((page) => (
+                      <PaginationItem key={page}>
+                        <PaginationLink
+                          isActive={currentPage == page}
+                          onClick={handleCurrentPage.bind(null, page)}
+                          className="cursor-pointer"
+                        >
+                          {page}
+                        </PaginationLink>
+                      </PaginationItem>
+                    ))}
+                    <PaginationItem>
+                      <PaginationNext
+                        onClick={handleNextPage}
+                        className="cursor-pointer"
+                      />
+                    </PaginationItem>
+                  </PaginationContent>
+                </Pagination>
+              </div>
+            )}
         </section>
       )}
     </>

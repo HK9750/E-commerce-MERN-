@@ -1,4 +1,6 @@
 import React from "react";
+import About from "./About";
+import Contact from "./Contact";
 
 const Home: React.FC = () => {
   return (
@@ -25,8 +27,8 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-      <div>About Section</div>
-      <div>Contact section</div>
+      <About />
+      <Contact />
     </>
   );
 };

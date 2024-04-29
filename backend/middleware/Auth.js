@@ -9,11 +9,8 @@ export const Authenticate = AsyncErrorHandler(async (req, res, next) => {
   if (!token) {
     return next(new ErrorHandler("Invalid Token authenticated", 401));
   }
-
   const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-
   req.user = await User.findById(decodedData.id);
-
   next();
 });
 
